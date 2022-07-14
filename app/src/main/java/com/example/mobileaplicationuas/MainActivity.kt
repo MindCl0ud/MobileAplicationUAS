@@ -2,7 +2,10 @@
 
 package com.example.mobileaplicationuas
 
+import android.nfc.Tag
 import android.os.Bundle
+import android.util.Log
+import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -28,15 +31,28 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobileaplicationuas.MainActivity.Companion.TAG
 import com.example.mobileaplicationuas.Model.AuthViewModel
 import com.example.mobileaplicationuas.Representation.GoogleSignInButtonUi
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.lubnamariyam.googlesigninusingcompose.presentation.AuthScreen
 import com.lubnamariyam.googlesigninusingcompose.utils.AuthResultContract
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+
+    companion object{
+        val TAG : String = MainActivity::class.java.simpleName
+    }
+
+    private val auth by lazy{
+        Firebase.auth
+    }
+
     @ExperimentalCoroutinesApi
     @ExperimentalFoundationApi
     @ExperimentalAnimationApi
@@ -47,7 +63,7 @@ class MainActivity : ComponentActivity() {
             MobileAplicationUASTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    LoginScreen()
+                    LoginScreen(Firebase.auth)
                 }
             }
         }
@@ -55,7 +71,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun LoginScreen(){
+fun LoginScreen(auth: FirebaseAuth){
 
     val focusManager = LocalFocusManager.current
 
@@ -64,6 +80,17 @@ fun LoginScreen(){
     }
     var password by remember {
         mutableStateOf("")
+    }
+
+    val isEmailValid by derivedStateOf{
+        Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+    val isPasswordValid by derivedStateOf{
+        password.length > 7
+    }
+
+    val isPasswordVisible by remember {
+        mutableStateOf(false)
     }
 
     Column(
@@ -99,7 +126,8 @@ fun LoginScreen(){
                 ),
                 keyboardActions = KeyboardActions(
                     onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                )
+                ),
+                isError = isEmailValid
             )
             OutlinedTextField(
                 value = password,
@@ -113,7 +141,8 @@ fun LoginScreen(){
                 ),
                 keyboardActions = KeyboardActions(
                     onNext = {focusManager.moveFocus(FocusDirection.Down)}
-                )
+                ),
+                isError = !isPasswordValid
             )
 
         }
@@ -133,7 +162,17 @@ fun LoginScreen(){
 
         }
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                      auth.signInWithEmailAndPassword(email, password)
+                          .addOnCompleteListener{
+                              if (it.isSuccessful){
+                                  Log.d(TAG,"Successful to Login")
+                              }
+                              else{
+                                  Log.w(TAG,"Failed to Login", it.exception)
+                              }
+                          }
+            },
             enabled = true,
             modifier = Modifier
                 .fillMaxWidth()
@@ -171,6 +210,6 @@ fun LoginScreen(){
 @Composable
 fun DefaultPreview() {
     MobileAplicationUASTheme {
-        LoginScreen()
+        LoginScreen(Firebase.auth)
     }
 }
