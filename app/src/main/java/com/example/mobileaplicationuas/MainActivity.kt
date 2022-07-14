@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,11 +20,13 @@ import com.example.mobileaplicationuas.ui.theme.MobileAplicationUASTheme
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha.medium
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.example.mobileaplicationuas.MainActivity.Companion.TAG
 import com.example.mobileaplicationuas.Model.AuthViewModel
 import com.example.mobileaplicationuas.Representation.GoogleSignInButtonUi
+import com.example.mobileaplicationuas.ui.theme.Shapes
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -202,6 +206,33 @@ fun LoginScreen(auth: FirebaseAuth){
                 fontSize = 16.sp,
                 //modifier = Modifier.padding(8.dp)
             )
+        }
+        var clicked by remember {
+            mutableStateOf(false)
+        }
+        Surface(
+            onClick ={ clicked = !clicked},
+            shape = Shapes.medium,
+            border = BorderStroke(width = 1.dp, color = Color.LightGray),
+            color = MaterialTheme.colors.surface
+        ) {
+            Row(
+                modifier = Modifier.padding(
+                    start = 12.dp,
+                    end = 16.dp,
+                    top = 12.dp,
+                    bottom = 12.dp
+                ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+              Icon(
+                  painter = painterResource(id = com.google.android.gms.auth.api.R.drawable.common_google_signin_btn_icon_dark),
+                  contentDescription = "Google Button",
+                  tint = Color.Unspecified
+              )
+                Text(text = "Login With Google")
+            }
         }
     }
 }
