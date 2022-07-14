@@ -6,12 +6,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.mobileaplicationuas.ui.theme.MobileAplicationUASTheme
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,29 +28,22 @@ import androidx.compose.ui.unit.sp
 import com.example.mobileaplicationuas.Model.AuthViewModel
 import com.example.mobileaplicationuas.Representation.GoogleSignInButtonUi
 import com.google.android.gms.common.api.ApiException
-import com.lubnamariyam.googlesigninusingcompose.presentation.AuthScreen
 import com.lubnamariyam.googlesigninusingcompose.utils.AuthResultContract
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity() {
-    @ExperimentalCoroutinesApi
-    @ExperimentalFoundationApi
-    @ExperimentalAnimationApi
-    @ExperimentalMaterialApi
+class MainAC : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MobileAplicationUASTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    LoginScreen()
+                    //LoginScreen()
                 }
             }
         }
     }
 }
-
+/*
 @Composable
 fun LoginScreen(){
 
@@ -167,10 +157,28 @@ fun LoginScreen(){
     }
 }
 
+@Composable
+fun AuthView(errorText:String?,
+             onClick:() -> Unit){
+    Scaffold {
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            GoogleSignInButtonUi(text = "Sign Up With Google",
+                loadingText = "Signing In....",
+                onClicked = {onClick()})
+            errorText?.let {
+                Spacer(modifier = Modifier.height(30.dp))
+                Text(text = it)
+            }
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     MobileAplicationUASTheme {
-        LoginScreen()
+        LoginScreen(AuthViewModel())
     }
 }
+*/
